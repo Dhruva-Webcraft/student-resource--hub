@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Resource Hub</title>
+    <meta name="description" content="Hybrid learning resource hub with study materials, progress tracking, and tools." />
+    <style>
+      :root {
+        --bg: #0b0b0d;
+        --panel: rgba(255, 255, 255, 0.08);
+        --panel-strong: rgba(255, 255, 255, 0.14);
+        --text: #f5f5f7;
+        --muted: rgba(245, 245, 247, 0.7);
+        --accent: #ffffff;
+        --accent2: rgba(255, 255, 255, 0.42);
+        --ring: rgba(255, 255, 255, 0.12);
+        --shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
+        --radius: 18px;
+        --font: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: var(--font);
+        background: radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.08), transparent 60%),
+          radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.04), transparent 55%),
+          linear-gradient(140deg, #07070a 0%, #0d0d11 100%);
+        color: var(--text);
+      }
+
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      header {
+        padding: clamp(2rem, 5vw, 4rem) 2rem 2rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero {
+        max-width: 1120px;
+        margin: 0 auto;
+        display: grid;
+        gap: 2rem;
+        grid-template-columns: minmax(0, 1fr) 380px;
+        align-items: center;
+      }
+
+      .hero__text {
+        display: grid;
+        gap: 1.5rem;
+      }
+
+      .hero h1 {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        margin: 0;
+        letter-spacing: -0.02em;
+      }
+
+      .hero p {
+        margin: 0;
+        line-height: 1.6;
+        color: var(--muted);
+        max-width: 520px;
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 0.85rem 1.3rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text);
+        transition: transform 200ms ease, background 200ms ease, box-shadow 200ms ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+        background: rgba(255, 255, 255, 0.14);
+        box-shadow: 0 18px 35px rgba(0, 0, 0, 0.35);
+      }
+
+      .btn:active {
+        transform: translateY(0);
+      }
+
+      .hero-visual {
+        padding: 1.5rem;
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(16px);
+        box-shadow: var(--shadow);
+        position: relative;
+      }
+
+      .hero-visual img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 16px;
+      }
+
+      .parallax-layer {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 240px;
+        height: 240px;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        filter: blur(0.25px);
+      }
+
+      .parallax-layer.layer-1 {
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.22), transparent 55%);
+        width: 320px;
+        height: 320px;
+        mix-blend-mode: screen;
+      }
+
+      .parallax-layer.layer-2 {
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.13), transparent 60%);
+        width: 240px;
+        height: 240px;
+        mix-blend-mode: screen;
+      }
+
+      .parallax-layer.layer-3 {
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.08), transparent 70%);
+        width: 320px;
+        height: 320px;
+        mix-blend-mode: screen;
+      }
+
+      main {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 2rem 2rem 4rem;
+        display: grid;
+        gap: 2.5rem;
+      }
+
+      section {
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        background: var(--panel);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: var(--shadow);
+      }
+
+      section h2 {
+        font-size: 1.65rem;
+        margin: 0 0 1rem;
+      }
+
+      .grid {
+        display: grid;
+        gap: 1.25rem;
+      }
+
+      .grid-3 {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      }
+
+      .card {
+        border-radius: 20px;
+        padding: 1.25rem;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+        transition: transform 200ms ease, background 200ms ease;
+      }
+
+      .card:hover {
+        transform: translateY(-4px);
+        background: rgba(255, 255, 255, 0.09);
+      }
+
+      .card-title {
+        font-size: 1.25rem;
+        margin: 0 0 0.6rem;
+      }
+
+      .card-subtitle {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .badge {
+        display: inline-flex;
+        gap: 0.35rem;
+        align-items: center;
+        padding: 0.25rem 0.5rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+        font-size: 0.75rem;
+        color: var(--accent2);
+      }
+
+      .dot {
+        height: 0.55rem;
+        width: 0.55rem;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.6);
+      }
+
+      .tools-grid {
+        display: grid;
+        gap: 1.25rem;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+
+      .tool-card {
+        position: relative;
+        border-radius: 18px;
+        padding: 1.3rem;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+        overflow: hidden;
+      }
+
+      .tool-card::before {
+        content: "";
+        position: absolute;
+        inset: -40% -40%;
+        background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.14), transparent 55%);
+        transform: translateY(-15%) rotate(14deg);
+        opacity: 0.7;
+        pointer-events: none;
+      }
+
+      .tool-card h3 {
+        margin-top: 0;
+      }
+
+      .tool-card p {
+        color: var(--muted);
+        margin: 0.5rem 0 1.1rem;
+      }
+
+      .tool-card .btn {
+        font-size: 0.9rem;
+        padding: 0.7rem 1rem;
+      }
+
+      .progress-ring {
+        width: 80px;
+        height: 80px;
+        position: relative;
+        margin: 0 auto 0.75rem;
+      }
+
+      .progress-ring svg {
+        transform: rotate(-90deg);
+      }
+
+      .progress-ring circle {
+        fill: transparent;
+        stroke-width: 8;
+        stroke-linecap: round;
+      }
+
+      .progress-ring__bg {
+        stroke: rgba(255, 255, 255, 0.12);
+      }
+
+      .progress-ring__fill {
+        stroke: #ffffff;
+        stroke-dasharray: 251.2;
+        stroke-dashoffset: 251.2;
+        transition: stroke-dashoffset 0.7s ease;
+      }
+
+      .progress-ring__label {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        font-size: 0.85rem;
+        color: var(--accent);
+      }
+
+      .progress-ring__subtitle {
+        font-size: 0.65rem;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .utility {margin-top: 1.25rem;}
+
+      .utility label {
+        display: block;
+        font-size: 0.85rem;
+        margin-bottom: 0.35rem;
+        color: var(--muted);
+      }
+
+      .utility input,
+      .utility select,
+      .utility textarea {
+        width: 100%;
+        padding: 0.75rem 0.9rem;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text);
+        font-family: var(--font);
+        outline: none;
+      }
+
+      .utility textarea {
+        resize: vertical;
+        min-height: 120px;
+      }
+
+      .utility input:focus,
+      .utility select:focus,
+      .utility textarea:focus {
+        border-color: rgba(255, 255, 255, 0.32);
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
+      }
+
+      .form-row {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .form-row > *:last-child {
+        grid-column: span 2;
+      }
+
+      .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+        margin-top: 1rem;
+      }
+
+      .form-actions .btn {
+        width: 170px;
+      }
+
+      .toggle-check {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        margin-top: 1rem;
+      }
+
+      .toggle-check input[type="checkbox"] {
+        width: 1.1rem;
+        height: 1.1rem;
+        accent-color: #fff;
+      }
+
+      .footer {
+        padding: 2rem;
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 900px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-visual {
+          order: -1;
+        }
+
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          scroll-behavior: auto !important;
+          transition: none !important;
+        }
+      }
+
+      /* Scroll animations */
+      .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+      }
+
+      .reveal.revealed {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="reveal">
+      <div class="hero">
+        <div class="hero__text">
+          <div>
+            <h1>Student Resource Hub</h1>
+            <p>
+              A hybrid learning dashboard built for fast navigation, controlled progress tracking, and a
+              curated resource library—designed in a clean black & white theme with subtle 3D depth.
+            </p>
+          </div>
+
+          <div class="hero-actions">
+            <button class="btn" id="btn-quick-resources">Browse Resources</button>
+            <button class="btn" id="btn-request-resource">Request a Resource</button>
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-hidden="true">
+          <div class="parallax-layer layer-1" data-parallax-speed="0.2"></div>
+          <div class="parallax-layer layer-2" data-parallax-speed="0.5"></div>
+          <div class="parallax-layer layer-3" data-parallax-speed="0.85"></div>
+          <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=720&q=60" alt="Student dashboard" loading="lazy" />
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="resources" aria-labelledby="resources-heading" class="reveal">
+        <h2 id="resources-heading">Study Resources</h2>
+        <p>
+          Explore notes, projects, and academic guides. Filter by subject, format, or your current course.
+        </p>
+
+        <div class="grid grid-3" id="resource-cards">
+          <article class="card" data-topic="biology" data-format="pdf">
+            <h3 class="card-title">Biology Lab Notes</h3>
+            <p class="card-subtitle">
+              Comprehensive lab notes with annotated photos and step-by-step experiment guides.
+            </p>
+            <div class="badge">
+              <span class="dot"></span>
+              <span>Biology</span>
+            </div>
+            <div class="toggle-check">
+              <input type="checkbox" id="check-1" data-progress-id="bio-lab" />
+              <label for="check-1">Mark as reviewed</label>
+            </div>
+            <div style="margin-top: 1rem; display: flex; justify-content: space-between;">
+              <a class="btn" href="#" role="button">Open</a>
+            </div>
+          </article>
+
+          <article class="card" data-topic="math" data-format="video">
+            <h3 class="card-title">Calculus Video Walkthrough</h3>
+            <p class="card-subtitle">Step-by-step guided solutions for integrals & derivatives.</p>
+            <div class="badge">
+              <span class="dot"></span>
+              <span>Math</span>
+            </div>
+            <div class="toggle-check">
+              <input type="checkbox" id="check-2" data-progress-id="calc-video" />
+              <label for="check-2">Done watching</label>
+            </div>
+            <div style="margin-top: 1rem; display: flex; justify-content: space-between;">
+              <a class="btn" href="#" role="button">Watch</a>
+            </div>
+          </article>
+
+          <article class="card" data-topic="writing" data-format="notes">
+            <h3 class="card-title">Essay Planning Template</h3>
+            <p class="card-subtitle">A guided outline with prompts and scoring rubrics for essays.</p>
+            <div class="badge">
+              <span class="dot"></span>
+              <span>English</span>
+            </div>
+            <div class="toggle-check">
+              <input type="checkbox" id="check-3" data-progress-id="essay-template" />
+              <label for="check-3">Saved</label>
+            </div>
+            <div style="margin-top: 1rem; display: flex; justify-content: space-between;">
+              <a class="btn" href="#" role="button">View</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="progress" aria-labelledby="progress-heading" class="reveal">
+        <h2 id="progress-heading">Hybrid Progress Tracking</h2>
+        <p>
+          Tracks your automated LMS grades & attendance, plus lets you "check off" personal milestones for extra agency.
+        </p>
+
+        <div class="grid grid-3" id="progress-cards">
+          <article class="card">
+            <div class="progress-ring" data-progress="72">
+              <svg width="80" height="80" aria-hidden="true">
+                <circle class="progress-ring__bg" cx="40" cy="40" r="38" />
+                <circle class="progress-ring__fill" cx="40" cy="40" r="38" />
+              </svg>
+              <div class="progress-ring__label">72%</div>
+            </div>
+            <h3 class="card-title">Current GPA</h3>
+            <p class="card-subtitle">Auto-synced from LMS gradebook.</p>
+            <div class="toggle-check">
+              <input type="checkbox" id="check-gpa" />
+              <label for="check-gpa">Added personal goal</label>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="progress-ring" data-progress="55">
+              <svg width="80" height="80" aria-hidden="true">
+                <circle class="progress-ring__bg" cx="40" cy="40" r="38" />
+                <circle class="progress-ring__fill" cx="40" cy="40" r="38" />
+              </svg>
+              <div class="progress-ring__label">55%</div>
+            </div>
+            <h3 class="card-title">Attendance</h3>
+            <p class="card-subtitle">Synced from the LMS attendance log.</p>
+            <div class="toggle-check">
+              <input type="checkbox" id="check-attendance" />
+              <label for="check-attendance">Logged study session</label>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="progress-ring" data-progress="40">
+              <svg width="80" height="80" aria-hidden="true">
+                <circle class="progress-ring__bg" cx="40" cy="40" r="38" />
+                <circle class="progress-ring__fill" cx="40" cy="40" r="38" />
+              </svg>
+              <div class="progress-ring__label">40%</div>
+            </div>
+            <h3 class="card-title">Milestones</h3>
+            <p class="card-subtitle">Custom checklists for study habits and goals.</p>
+            <div class="toggle-check">
+              <input type="checkbox" id="check-milestone" />
+              <label for="check-milestone">Completed weekly review</label>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="tools" aria-labelledby="tools-heading" class="reveal">
+        <h2 id="tools-heading">Useful Tools</h2>
+        <p>
+          Access GPA calculators, timetable planners, and other academic utilities directly from your dashboard.
+        </p>
+        <div class="tools-grid">
+          <article class="tool-card">
+            <h3>GPA Calculator</h3>
+            <p>Quickly estimate term GPA by entering course grades and credit hours.</p>
+            <button class="btn" id="open-gpa">Open</button>
+          </article>
+
+          <article class="tool-card">
+            <h3>Timetable Planner</h3>
+            <p>Build your weekly study schedule and sync it with your calendar.</p>
+            <button class="btn" id="open-timetable">Open</button>
+          </article>
+
+          <article class="tool-card">
+            <h3>Academic Utilities</h3>
+            <p>Quick citations, note exports, formula lookup, and more.</p>
+            <button class="btn" id="open-utilities">Open</button>
+          </article>
+        </div>
+      </section>
+
+      <section id="request" aria-labelledby="request-heading" class="reveal">
+        <h2 id="request-heading">Resource Request Form</h2>
+        <p>
+          Request new study materials or suggest resources you want to see added to the library.
+        </p>
+
+        <form id="resource-form" class="utility" autocomplete="off">
+          <div class="form-row">
+            <div>
+              <label for="course">Course</label>
+              <select id="course" required>
+                <option value="">Select your course</option>
+                <option value="biology">Biology 101</option>
+                <option value="math">Calculus II</option>
+                <option value="cs">Intro to Computer Science</option>
+                <option value="writing">Academic Writing</option>
+              </select>
+            </div>
+            <div>
+              <label for="resourceType">Resource type</label>
+              <select id="resourceType" required>
+                <option value="">Select a type</option>
+                <option value="notes">Notes</option>
+                <option value="video">Video</option>
+                <option value="practice">Practice</option>
+                <option value="quiz">Quiz</option>
+                <option value="3dmodel">3D Model</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="utility">
+            <label for="description">Request details</label>
+            <textarea id="description" placeholder="Describe the resource you want (topic, format, why it helps)." required></textarea>
+          </div>
+
+          <div class="utility">
+            <label for="priority">Priority</label>
+            <select id="priority" required>
+              <option value="normal">Normal</option>
+              <option value="high">High</option>
+              <option value="urgent">Urgent</option>
+            </select>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn" id="reset-form">Clear</button>
+            <button type="submit" class="btn">Submit Request</button>
+          </div>
+        </form>
+
+        <div id="form-status" style="margin-top: 1rem; color: var(--muted); font-size: 0.95rem;"></div>
+      </section>
+
+      <section id="chat" aria-labelledby="chat-heading" class="reveal">
+        <h2 id="chat-heading">AI-Assisted Collaboration</h2>
+        <p>
+          Quick navigation help, peer connections, and prompt suggestions powered by a lightweight
+          assistant.
+        </p>
+
+        <div class="card" style="display: grid; gap: 1rem;">
+          <div style="display: flex; gap: 1rem; align-items: center;">
+            <div style="width: 56px; height: 56px; border-radius: 14px; background: rgba(255,255,255,0.1); display: grid; place-items: center; font-weight: 700; font-size: 1.25rem;">
+              AI
+            </div>
+            <div>
+              <strong>Need quick help?</strong>
+              <div style="color: var(--muted); font-size: 0.9rem;">Ask for navigation tips, resource suggestions, or study group ideas.</div>
+            </div>
+          </div>
+
+          <div>
+            <div style="display: flex; gap: 0.75rem;">
+              <input id="ai-query" placeholder="Ask: Where is my calculus review?" style="flex:1;" />
+              <button class="btn" id="ask-ai">Ask</button>
+            </div>
+            <div id="ai-answer" style="margin-top: 0.9rem; padding: 1rem; border-radius: 16px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1);">
+              <p style="margin: 0; color: var(--muted);">Your answers will appear here.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="model-viewer" aria-labelledby="model-heading" class="reveal">
+        <h2 id="model-heading">On-Demand 3D Model Viewer</h2>
+        <p>Click "Explore in 3D" on a resource card to open a lightweight preview. Models load only on demand.</p>
+        <div style="display: grid; gap: 1.5rem;
+                    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                    align-items: start;">
+          <div style="border-radius: 18px; padding: 1.35rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 14px 35px rgba(0,0,0,0.35);">
+            <p style="margin: 0 0 0.75rem; color: var(--muted);">3D view is powered by <code>&lt;model-viewer&gt;</code>. Models load when you click a resource’s Expand button.</p>
+            <div id="model-container" style="width: 100%; height: 360px; border-radius: 18px; overflow: hidden; background: rgba(0,0,0,0.25); display: grid; place-items: center;">
+              <p style="color: var(--muted);">No model loaded. Click “Explore in 3D” on a card above.</p>
+            </div>
+          </div>
+          <div style="border-radius: 18px; padding: 1.35rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 14px 35px rgba(0,0,0,0.35);">
+            <h3 style="margin: 0 0 0.75rem;">Tips for fast viewing</h3>
+            <ul style="margin: 0; padding-left: 1.2rem; color: var(--muted);">
+              <li>Use Chrome/Edge for best <code>&lt;model-viewer&gt;</code> support.</li>
+              <li>Tap the fullscreen button for immersive study review.</li>
+              <li>Close models when done to keep page light.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      © 2026 Student Resource Hub · Built for hybrid learning with a focus on speed, accessibility, and agency.
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js" integrity="sha384-qS3I+zMAZWX8ybC6VIKkJ3cXdp/7LN8jTSaN1bE6ZjhdEzmK8dT/AcXscyU5p0jX" crossorigin="anonymous"></script>
+
+    <script>
+      const getProgressCircle = (element) => {
+        const circle = element.querySelector('.progress-ring__fill');
+        const radius = parseFloat(circle.getAttribute('r'));
+        const circumference = 2 * Math.PI * radius;
+        circle.style.strokeDasharray =
+          circle.style.strokeDasharray || circumference;
+        return { circle, circumference };
+      };
+
+      const setProgress = (element, percent) => {
+        const { circle, circumference } = getProgressCircle(element);
+        const offset = circumference - (percent / 100) * circumference;
+        circle.style.strokeDashoffset = offset;
+      };
+
+      document.querySelectorAll('.progress-ring').forEach((el) => {
+        const percent = Number(el.dataset.progress || 0);
+        setProgress(el, percent);
+      });
+
+      document.getElementById('btn-quick-resources').addEventListener('click', () => {
+        document.getElementById('resources').scrollIntoView({ behavior: 'smooth' });
+      });
+
+      document.getElementById('btn-request-resource').addEventListener('click', () => {
+        document.getElementById('request').scrollIntoView({ behavior: 'smooth' });
+      });
+
+      document.getElementById('resource-form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        const course = document.getElementById('course').value;
+        const type = document.getElementById('resourceType').value;
+        const priority = document.getElementById('priority').value;
+        const description = document.getElementById('description').value.trim();
+
+        if (!course || !type || !description) {
+          return;
+        }
+
+        const status = document.getElementById('form-status');
+        status.textContent = 'Sending your request...';
+
+        window.setTimeout(() => {
+          status.textContent = `Request sent — we’ll notify you when a resource is available for ${course}.`;
+          document.getElementById('resource-form').reset();
+        }, 850);
+      });
+
+      document.getElementById('reset-form').addEventListener('click', () => {
+        document.getElementById('resource-form').reset();
+        document.getElementById('form-status').textContent = '';
+      });
+
+      document.getElementById('ask-ai').addEventListener('click', () => {
+        const query = document.getElementById('ai-query').value.trim();
+        const answer = document.getElementById('ai-answer');
+
+        if (!query) {
+          answer.innerHTML = '<p style="margin:0;">Try asking something like "Show me my biology resources."</p>';
+          return;
+        }
+
+        answer.innerHTML = '<p style="margin:0; color: var(--muted);">Searching your library... (simulated)</p>';
+
+        setTimeout(() => {
+          answer.innerHTML = `<p style="margin:0;">Based on your query, here are a few matches:</p>
+            <ul style="margin:0.75rem 0 0; padding-left: 1.2rem; color: var(--muted);">
+              <li>Biology Lab Notes (Resource Hub)</li>
+              <li>Calculus Video Walkthrough (Video)</li>
+              <li>Essay Planning Template (Notes)</li>
+            </ul>`;
+        }, 800);
+      });
+
+      // Parallax layering for hero
+      const parallaxItems = document.querySelectorAll('.parallax-layer');
+      const parallaxImg = document.querySelector('.hero-visual img');
+      let scrollY = 0;
+      let mouseX = 0;
+      let mouseY = 0;
+
+      const updateParallax = () => {
+        parallaxItems.forEach((layer) => {
+          const speed = Number(layer.dataset.parallaxSpeed) || 0.2;
+          const x = mouseX * speed * 45;
+          const y = mouseY * speed * 45 + scrollY * speed * 0.5;
+          layer.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+        });
+        if (parallaxImg) {
+          parallaxImg.style.transform = `translateY(${scrollY * 0.3}px)`;
+        }
+      };
+
+      document.addEventListener('mousemove', (event) => {
+        mouseX = (event.clientX / window.innerWidth) - 0.5;
+        mouseY = (event.clientY / window.innerHeight) - 0.5;
+        updateParallax();
+      });
+
+      document.addEventListener('scroll', () => {
+        scrollY = window.scrollY;
+        updateParallax();
+      });
+
+      // Vanilla tilt for resource + tool cards
+      VanillaTilt.init(document.querySelectorAll('.card, .tool-card'), {
+        max: 10,
+        speed: 400,
+        glare: true,
+        "max-glare": 0.18,
+        scale: 1.02,
+      });
+
+      // Scroll reveal animations
+      const observerOptions = {
+        threshold: 0,
+        rootMargin: '0px 0px 0px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll('.reveal').forEach(el => {
+        observer.observe(el);
+      });
+
+      // Check initially visible elements
+      document.querySelectorAll('.reveal').forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          el.classList.add('revealed');
+        }
+      });
+    </script>
+  </body>
+</html>
